@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Accueil</h1>
+
+    {% if app.user %}
+        <p>Bienvenue {{ app.user.username }} !</p>
+        {# <a href="{{ path('app_home_logout') }}">Déconnexion</a> #}
+    {% else %}
+        <p>Connectez-vous ou inscrivez-vous !</p>
+        <a href="{{ path('app_home_login') }}">Connexion</a> |
+        <a href="{{ path('app_home_register') }}">Inscription</a>
+    {% endif %}
+{% endblock %}
