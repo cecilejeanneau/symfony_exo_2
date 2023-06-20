@@ -8,7 +8,7 @@
         {# <a href="{{ path('app_home_logout') }}">Déconnexion</a> #}
     {% else %}
         <p>Connectez-vous ou inscrivez-vous !</p>
-        <a href="{{ path('app_home_login') }}">Connexion</a> |
-        <a href="{{ path('app_home_register') }}">Inscription</a>
+        <button class='btn btn-success' href="{{ path('app_home_login') }}">Connexion</button> |
+        {# <a href="{{ path('app_home_register') }}">Inscription</a> #}
     {% endif %}
 {% endblock %}
