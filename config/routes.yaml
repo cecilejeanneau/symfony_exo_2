@@ -8,3 +8,7 @@ place_details:
     path: /place/{id}
     controller: App\Controller\FrontController::details
 
+app_home_register2:
+    path: /inscription
+    controller: App\Controller\RegisterController::index
+    methods: ['GET', 'POST']
