@@ -18,19 +18,28 @@ export default class extends Controller {
 
     try {
       const response = await fetch(`/search?keywords=${encodeURIComponent(keywords)}`);
-      const results = await response.json();
+      const searchResults = await response.json();
 
-      const html = results.map((result) => {
+      const html = searchResults.map((result) => {
+		const photosImg = result.photos.map((photo) => {
+			return `<img src="${photo.url}" alt="${photo.name}">`;
+		}).join('');
+		
         return `
-          <li>
-            <h3>${result.name}</h3>
-            <p>${result.description}</p>
-            <img src="${result.photo.url}" alt="${result.photo.name}">
-          </li>
+			
+			<li>
+				<a href="/place/${result.id}" class="bg-primary">
+					<h3>${result.name}</h3>
+					<p>${result.description}</p>
+					${photosImg}
+				</a>
+			</li>
+			
         `;
       }).join('');
 
       this.search_resultsTarget.innerHTML = html;
+
     } catch (error) {
       console.error('Une erreur s\'est produite lors de la recherche :', error);
     }

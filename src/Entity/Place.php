@@ -210,6 +210,20 @@ class Place
         return $this->photos;
     }
 
+    /**
+     * Get the first photo of a place.
+     *
+     * @return Photo|null
+     */
+    public function getPhoto(): ?Photo
+    {
+        if ($this->photos instanceof Collection && $this->photos->count() > 0) {
+            return $this->photos->first();
+        }
+
+        return null;
+    }
+
     public function addPhoto(Photo $photo): self
     {
         if (!$this->photos->contains($photo)) {

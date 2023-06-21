@@ -5,9 +5,10 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PlaceRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * Summary of FrontController
@@ -15,18 +16,20 @@ use Symfony\Component\HttpFoundation\Request;
 class FrontController extends AbstractController
 {
     /**
-     * Summary of entityManager
-     * @var 
+     * Summary of placeRepository
+     * @var $placeRepository PlaceRepository
      */
-    private $entityManager;
+    private $placeRepository;
 
     /**
      * Summary of __construct
-     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param \App\Repository\PlaceRepository $placeRepository
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(
+        PlaceRepository $placeRepository
+    )
     {
-        $this->entityManager = $entityManager;
+        $this->placeRepository = $placeRepository;
     }
 
     #[Route("/search", name: "search")]
@@ -38,32 +41,50 @@ class FrontController extends AbstractController
     public function search(Request $request): Jsonresponse
     {
         $keywords = $request->query->get('keywords');
+        $places = $this->placeRepository->searchByKeywords($keywords);
 
-        $entityManager = $this->entityManager;
-        $query = $entityManager->createQuery(
-            'SELECT p.id, p.name, p.description, ph.name, ph.url FROM App\Entity\Place p LEFT JOIN p.photos ph
-            WHERE p.name LIKE :keywords
-            OR p.description LIKE :keywords
-            OR ph.name LIKE :keywords'
-        )->setParameter('keywords', '%'.$keywords.'%');
+        $searchResults = [];
 
-        $lieux = $query->getResult();
-
-        $serializedLieux = [];
-        foreach ($lieux as $lieu) {
-            $serializedLieux[] = [
-                'id' => $lieu['id'],
-                'name' => $lieu['name'],
-                'description' => $lieu['description'],
-                'photo' => [
-                    'name' => $lieu['name'],
-                    'url' => $lieu['url'],
-                ],
+        foreach ($places as $place) {
+            $placePhotos = [];
+            
+            foreach ($place->getPhotos() as $photo) {
+                $placePhotos[] = [
+                    'name' => $photo->getName(),
+                    'url' => $photo->getUrl(),
+                ];
+            }
+            
+            $searchResults[] = [
+                'id' => $place->getId(),
+                'name' => $place->getName(),
+                'description' => $place->getDescription(),
+                'photos' => $placePhotos,
             ];
         }
 
-        return new JsonResponse($serializedLieux);
+        return new JsonResponse($searchResults);
     }
+
+    #[Route("/place/{id}", name: "place_details")]
+    /**
+     * Summary of details
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function details(int $id): Response
+    {
+        $place = $this->placeRepository->findPlaceById($id);
+
+        if (!$place) {
+            throw $this->createNotFoundException('Place not found');
+        }
+
+        return $this->render('front/place/details.html.twig', [
+            'place' => $place,
+        ]);
+    }
+
 
     #[Route('/', name: 'app_home')]
     /**

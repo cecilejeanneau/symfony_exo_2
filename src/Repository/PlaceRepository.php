@@ -79,4 +79,34 @@ class PlaceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * Summary of searchByKeywords
+     * @param mixed $keywords
+     * @return mixed
+     */
+    public function searchByKeywords($keywords): mixed
+    {
+        $query = $this->createQueryBuilder('p')
+            ->leftJoin('p.photos', 'ph')
+            ->where('p.name LIKE :keywords')
+            ->orWhere('p.description LIKE :keywords')
+            ->orWhere('ph.name LIKE :keywords')
+            ->setParameter('keywords', '%'.$keywords.'%')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function findPlaceById(int $id): ?Place
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.photos', 'ph')
+            ->addSelect('ph')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

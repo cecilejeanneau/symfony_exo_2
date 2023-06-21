@@ -14,11 +14,15 @@
     </head>
     <body>
         <header>
-            <nav data-controller="search">
+            <nav data-controller="search" data-details-url="{{ path('place_details', {'id': 0}) }}">
                 <label for="search_box">rechercher</label>
                 <input type="text" id="search_box" data-action="input->search#searching">
                 <ul data-search-target="search_results">
-                    <li data-display-target="search_results"></li>
+                    {# {% for place in search_results %} #}
+                        {# <a href="{{ path('place_details', {'id': place.id ?? 0}) }}"> #}
+                            {# <li data-display-target="search_results"></li> #}
+                        {# </a> #}
+                    {# {% endfor %} #}
                 </ul>
             </nav>
             
