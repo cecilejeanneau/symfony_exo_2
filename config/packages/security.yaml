@@ -20,8 +20,8 @@ security:
                 login_path: app_home_login
                 check_path: app_home_login
                 # default_target_path: home
-                username_parameter: _username
-                password_parameter: _password
+                # username_parameter: _username
+                # password_parameter: _password
                 enable_csrf: true
             logout:
                 path: app_home_logout

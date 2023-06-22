@@ -12,3 +12,8 @@ app_home_register2:
     path: /inscription
     controller: App\Controller\RegisterController::index
     methods: ['GET', 'POST']
+
+app_home_login:
+    path: /login
+    controller: App\Controller\LoginController::index
+    methods: ['GET', 'POST']

@@ -13,17 +13,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+/**
+ * Summary of User
+ */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /**
+     * Summary of id
+     * @var $id ?int
+     */
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    /**
+     * Summary of email
+     * @var $email string
+     */
+    private string $email = '';
 
     #[ORM\Column]
+    /**
+     * Summary of roles
+     * @var $roles array
+     */
     private array $roles = [];
 
     /**
@@ -33,23 +48,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * Summary of first_name
+     * @var $first_name ?string 
+     */
     private ?string $first_name = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * Summary of last_name
+     * @var $last_name ?string
+     */
     private ?string $last_name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    /**
+     * Summary of avatar
+     * @var $avatar ?string 
+     */
     private ?string $avatar = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * Summary of username
+     * @var $username ?string 
+     */
     private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Place::class, orphanRemoval: true)]
+    /**
+     * Summary of places
+     * @var $places Collection
+     */
     private Collection $places;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->places = new ArrayCollection();
+        $this->roles = [];
     }
 
     /**
@@ -253,6 +292,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->places;
     }
 
+    /**
+     * Summary of addPlace
+     * @param \App\Entity\Place $place
+     * @return \App\Entity\User
+     */
     public function addPlace(Place $place): self
     {
         if (!$this->places->contains($place)) {
@@ -263,6 +307,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * Summary of removePlace
+     * @param \App\Entity\Place $place
+     * @return \App\Entity\User
+     */
     public function removePlace(Place $place): self
     {
         if ($this->places->removeElement($place)) {
@@ -273,5 +322,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function verifyPassword(string $password): bool
+    {
+        return password_verify($password, $this->password);
     }
 }
