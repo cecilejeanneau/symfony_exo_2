@@ -19,22 +19,22 @@ class LoginController extends AbstractController
 {
     /**
      * Summary of entityManager
-     * @var $entityManager EntityManagerInterface
+    //  * @var $entityManager EntityManagerInterface
      */
-    private $entityManager;
+    // private $entityManager;
 
     
     /**
      * Summary of tokenStorage
-     * @var $tokenStorage TokenStorageInterface
+    //  * @var $tokenStorage TokenStorageInterface
      */
-    private $tokenStorage;
+    // private $tokenStorage;
 
     // /**
     //  * Summary of user
     //  * @var \Symfony\Component\Security\Core\User\UserInterface $user
     //  */
-    private $user;
+    // private $user;
 
     // /**
     //  * Summary of security
@@ -42,61 +42,48 @@ class LoginController extends AbstractController
     //  */
     // private $security;
 
-    /**
-     * Summary of __construct
-     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-    //  * @param \Symfony\Component\Security\Core\User\UserInterface $user
-     */
-    public function __construct(
-        EntityManagerInterface $entityManager, 
-        TokenStorageInterface $tokenStorage,
-        User $user
-        // Security $security
-        ) {
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
-        $this->user = $user;
-        // $this->security = $security;
-    }
-    #[Route('/login', name: 'app_home_login',  methods: ['GET', 'POST'])]
+    /**:
+    #[Route('/login', name: 'app_home_login')]
     /**
      * Summary of index
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        $form = $this->createForm(LoginFormType::class, null, [
-            'data_class' => User::class,
-        ]);
+        // $form = $this->createForm(LoginFormType::class, null, [
+        //     'data_class' => User::class,
+        // ]);
 
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $email = $formData['_email'];
-            $password = $formData['password'];
+        // $form->handleRequest($request);
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $formData = $form->getData();
+        //     $email = $formData['_email'];
+        //     $password = $formData['password'];
 
-            // User Authentication
-            $userRepository = $this->entityManager->getRepository(User::class);
-            $user = $userRepository->findOneBy(['_email' => $email]);
-            if (!$user || !$user->verifyPassword($password)) {
-                throw new AuthenticationException('Invalid login');
-            }
-            // $token = new UsernamePasswordToken($this->user, '', ['ROLE_USER'], $this->user->getRoles());
-            $token = new UsernamePasswordToken($user, $password, ['ROLE_USER']);
+        //     // User Authentication
+        //     $userRepository = $this->entityManager->getRepository(User::class);
+        //     $user = $userRepository->findOneBy(['_email' => $email]);
+        //     if (!$user || !$user->verifyPassword($password)) {
+        //         throw new AuthenticationException('Invalid login');
+        //     }
+        //     // $token = new UsernamePasswordToken($this->user, '', ['ROLE_USER'], $this->user->getRoles());
+        //     $token = new UsernamePasswordToken($user, $password, ['ROLE_USER']);
 
-            $this->tokenStorage->setToken($token);
+        //     $this->tokenStorage->setToken($token);
 
-            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
-        }
+        //     return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        // }
 
-        return $this->render('front/home/login/index.html.twig', [
-            'form' => $form->createView(),
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
+        // return $this->render('front/home/login/index.html.twig', [
+        //     'form' => $form->createView(),
+        //     // 'last_username' => $lastUsername,
+        //     // 'error' => $error,
+        // ]);
+
+        
+        return $this->render('front/home/login/index.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 }
